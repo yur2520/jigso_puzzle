@@ -5,11 +5,13 @@
         const loadingMessage = document.getElementById('loadingMessage');
         const gameInfo = document.getElementById('gameInfo');
         const completionMessage = document.getElementById('completionMessage');
+        
 
         // 퍼즐 이미지 객체를 생성합니다.
         const image = new Image();
         let currentImageSrc = null;
         let currentImageRatio = 1; // 이미지의 가로세로 비율
+        
 
         // 미리 정의된 이미지 정보
         const imageDatabase = {
@@ -53,6 +55,9 @@
         let gameTimer = null;
         let completedCount = 0;
 
+        let gridCols = 0; // 그리드 열 개수 저장 변수 추가
+let gridRows = 0;
+
         // 이미지 로딩 성공 처리
         image.onload = () => {
             hideLoading();
@@ -70,7 +75,22 @@
             enableDifficultyButtons();
             showSuccess('이미지가 로드되었습니다! 난이도를 선택해주세요.');
         };
+        
+function applyDynamicTheme() {
+    const colorThief = new ColorThief();
+    // getPalette(image, colorCount)는 이미지에서 지정된 개수의 주요 색상 배열을 반환합니다.
+    const palette = colorThief.getPalette(image, 2); // 2개의 주요 색상 추출
 
+    if (palette && palette.length >= 2) {
+        const primaryColor = `rgb(${palette[0].join(',')})`;
+        const secondaryColor = `rgb(${palette[1].join(',')})`;
+
+        // CSS 변수 값을 변경하여 테마 적용
+        document.documentElement.style.setProperty('--theme-bg-color', `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`);
+        document.documentElement.style.setProperty('--theme-button-color', primaryColor);
+        document.documentElement.style.setProperty('--theme-button-hover-color', secondaryColor);
+    }
+}
         // 이미지 크기 최적화 함수
         function calculateOptimalSize() {
             const maxWidth = Math.min(600, window.innerWidth * 0.85);
@@ -434,3 +454,65 @@
                 piecesContainer.style.width = `${newPuzzleWidth}px`;
             }
         });
+
+        // 디바운스 함수: 이벤트가 연속으로 발생할 때 마지막 이벤트만 처리하여 성능을 최적화합니다.
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function handleResize() {
+    if (!currentImageSrc) return; // 이미지가 없으면 실행하지 않음
+
+    // 1. 퍼즐 컨테이너의 최적 크기를 다시 계산
+    calculateOptimalSize();
+
+    // 2. 컨테이너들 크기 업데이트
+    puzzleContainer.style.width = `${puzzleWidth}px`;
+    puzzleContainer.style.height = `${puzzleHeight}px`;
+    piecesContainer.style.width = `${puzzleWidth}px`;
+    piecesContainer.style.minHeight = `${Math.max(200, puzzleHeight * 0.6)}px`;
+    
+    // 게임이 시작된 경우에만 조각 크기 및 위치 재조정
+    if (pieces.length > 0) {
+        // 3. 조각의 새 너비와 높이 계산
+        pieceWidth = puzzleWidth / gridCols;
+        pieceHeight = puzzleHeight / gridRows;
+
+        // 4. 모든 조각의 크기와 위치 업데이트
+        pieces.forEach(piece => {
+            piece.style.width = `${pieceWidth}px`;
+            piece.style.height = `${pieceHeight}px`;
+
+            // 만약 조각이 이미 퍼즐 판에 맞춰진 상태('snapped')라면,
+            // 새 크기에 맞게 위치도 다시 계산해줍니다.
+            if (piece.classList.contains('snapped')) {
+                // dataset에 저장된 원래 위치 비율을 기반으로 새 위치 계산
+                const correctXIndex = parseFloat(piece.dataset.correctX) / (parseFloat(piece.style.width) || pieceWidth);
+                const correctYIndex = parseFloat(piece.dataset.correctY) / (parseFloat(piece.style.height) || pieceHeight);
+
+                piece.style.left = `${correctXIndex * pieceWidth}px`;
+                piece.style.top = `${correctYIndex * pieceHeight}px`;
+            }
+        });
+    }
+}
+
+
+// 창 크기 변경 시 반응형 조정 (디바운스 적용)
+window.addEventListener('resize', debounce(handleResize, 250)); // 250ms 간격으로 실행
+
+// 페이지 로드 시 첫 번째 프리셋 이미지 자동 선택
+window.addEventListener('load', () => {
+    const firstPreset = document.querySelector('.preset-image-container');
+    if (firstPreset) {
+        firstPreset.click();
+    }
+});
