@@ -1,315 +1,337 @@
  :root {
-    --theme-bg-color: linear-gradient(135deg, #adbdda 0%, #9e92ac 100%);
-    --theme-button-color: #9899ca;
-    --theme-button-hover-color: #7081b8;
-}
- 
- 
+     --theme-bg-color: linear-gradient(135deg, #adbdda 0%, #9e92ac 100%);
+     --theme-button-color: #9899ca;
+     --theme-button-hover-color: #7081b8;
+ }
+
+ @font-face {
+     font-family: 'SUITE Variable';
+     font-weight: 300 900;
+     /* 폰트 파일 경로가 올바른지 확인해주세요. */
+     src: url('./SUITE-Variable.woff2') format('woff2-variations');
+ }
+
+
+ * {
+     box-sizing: border-box;
+ }
+
  body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-             background: var(--theme-bg-color);
-             transition: 0.5s ease;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            color: #333;
-        }
+     font-family: 'SUITE Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     text-align: center;
+     background: var(--theme-bg-color);
+     transition: 0.5s ease;
+     margin: 0;
+     padding: 20px;
+     min-height: 100vh;
+     color: #333;
+ }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+ .container {
+     max-width: 1200px;
+     margin: 0 auto;
+ }
 
-        h1 {
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-        }
+ h1 {
+     color: white;
+     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+     margin-bottom: 30px;
+ }
 
-        .controls {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+ .controls {
+     background: white;
+     border-radius: 15px;
+     padding: 20px;
+     margin-bottom: 20px;
+     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+ }
 
-        .image-selection {
-            margin-bottom: 20px;
-        }
+ .image-selection {
+     margin-bottom: 20px;
+ }
 
-        .preset-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            justify-items: center;
-            margin-bottom: 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+ .preset-images {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+     gap: 15px;
+     justify-items: center;
+     margin-bottom: 20px;
+     max-width: 800px;
+     margin-left: auto;
+     margin-right: auto;
+ }
 
-        .preset-image-container {
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
+ .preset-image-container {
+     text-align: center;
+     cursor: pointer;
+     transition: transform 0.3s;
+ }
 
-        .preset-image-container:hover {
-            transform: translateY(-5px);
-        }
+ .preset-image-container:hover {
+     transform: translateY(-5px);
+ }
 
-        .preset-image {
-            width: 120px;
-            height: 90px;
-            border: 3px solid #ddd;
-            border-radius: 10px;
-            cursor: pointer;
-            object-fit: cover;
-            transition: all 0.3s;
-            display: block;
-        }
+ .preset-image {
+     width: 120px;
+     height: 90px;
+     border: 3px solid #ddd;
+     border-radius: 10px;
+     cursor: pointer;
+     object-fit: cover;
+     transition: all 0.3s;
+     display: block;
+ }
 
-        .preset-image:hover {
-            border-color: #4CAF50;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
+ .preset-image:hover {
+     border-color: #4CAF50;
+     box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+ }
 
-        .preset-image.selected {
-            border-color: #4CAF50;
-            border-width: 4px;
-            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
-        }
+ .preset-image.selected {
+     border-color: #4CAF50;
+     border-width: 4px;
+     box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+ }
 
-        .image-title {
-            margin-top: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-        }
+ .image-title {
+     margin-top: 8px;
+     font-size: 14px;
+     font-weight: bold;
+     color: #333;
+ }
 
-        .image-description {
-            font-size: 12px;
-            color: #666;
-            margin-top: 2px;
-        }
+ .image-description {
+     font-size: 12px;
+     color: #666;
+     margin-top: 2px;
+ }
 
-        .difficulty-controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+ .difficulty-controls {
+     display: flex;
+     justify-content: center;
+     gap: 10px;
+     flex-wrap: wrap;
+ }
 
-        .difficulty-controls button {
-            background: var(--theme-button-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
+ .difficulty-controls button {
+     background: var(--theme-button-color);
+     color: white;
+     border: none;
+     padding: 10px 20px;
+     border-radius: 8px;
+     cursor: pointer;
+     font-size: 16px;
+     transition: all 0.3s;
+ }
 
-        .difficulty-controls button:hover {
-            background: #1976D2;
-            transform: translateY(-2px);
-        }
+ .difficulty-controls button:hover {
+     background: var(--theme-button-hover-color);
+     transform: translateY(-2px);
+ }
 
-        .difficulty-controls button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+ .difficulty-controls button:disabled {
+     background: #ccc;
+     cursor: not-allowed;
+     transform: none;
+ }
 
-        .game-info {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
+ .game-info {
+     background: white;
+     border-radius: 10px;
+     padding: 15px;
+     margin-bottom: 20px;
+     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+     display: none;
+ }
 
-        .game-info.show {
-            display: block;
-        }
+ .game-info.show {
+     display: block;
+ }
 
-        .info-item {
-            display: inline-block;
-            margin: 0 15px;
-            font-weight: bold;
-        }
+ .info-item {
+     display: inline-block;
+     margin: 0 15px;
+     font-weight: bold;
+ }
 
-        .error-message {
-            background: #f44336;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
-        }
+ .error-message {
+     background: #f44336;
+     color: white;
+     padding: 10px;
+     border-radius: 5px;
+     margin: 10px 0;
+     display: none;
+ }
 
-        .loading {
-            background: #2196F3;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            display: none;
-        }
+ .loading {
+     background: #2196F3;
+     color: white;
+     padding: 10px;
+     border-radius: 5px;
+     margin: 10px 0;
+     display: none;
+ }
 
-        #puzzle-container {
-            border: 3px solid #333;
-            position: relative;
-            background-color: #fff;
-            margin: 20px auto;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
+ #puzzle-container {
+     border: 3px solid #333;
+     position: relative;
+     background-color: #fff;
+     margin: 20px auto;
+     border-radius: 10px;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+     overflow: hidden;
+ }
 
-        #pieces-container {
-            border: 3px dashed #999;
-            position: relative;
-            margin: 20px auto;
-            min-height: 200px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
+ #pieces-container {
+     border: 3px dashed #999;
+     position: relative;
+     margin: 20px auto;
+     min-height: 200px;
+     background: rgba(255, 255, 255, 0.9);
+     border-radius: 10px;
+     backdrop-filter: blur(5px);
+ }
 
-        .puzzle-piece {
-            position: absolute;
-            border: 2px solid rgba(255,255,255,0.8);
-            cursor: grab;
-            border-radius: 4px;
-            transition: transform 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
+ .puzzle-piece {
+     position: absolute;
+     border: 2px solid rgba(255, 255, 255, 0.8);
+     cursor: grab;
+     border-radius: 4px;
+     transition: transform 0.2s ease;
+     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+ }
 
-        .puzzle-piece:hover {
-            transform: scale(1.05);
-            z-index: 10;
-        }
+ .puzzle-piece:hover {
+     transform: scale(1.05);
+     z-index: 10;
+ }
 
-        .puzzle-piece:active {
-            cursor: grabbing;
-        }
+ .puzzle-piece:active {
+     cursor: grabbing;
+ }
 
-        .puzzle-piece.snapped {
-            cursor: default;
-            border: 1px solid rgba(0,0,0,0.1);
-            transform: none;
-            box-shadow: none;
-        }
+ .puzzle-piece.snapped {
+     cursor: default;
+     border: 1px solid rgba(0, 0, 0, 0.1);
+     transform: none;
+     box-shadow: none;
+ }
 
-        .completion-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 10000;
-            text-align: center;
-            display: none;
-        }
+ .completion-message {
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     background: white;
+     padding: 30px;
+     border-radius: 15px;
+     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+     z-index: 10000;
+     text-align: center;
+     display: none;
+ }
 
-        .completion-message.show {
-            display: block;
-            animation: popIn 0.5s ease;
-        }
+ .completion-message.show {
+     display: block;
+     animation: popIn 0.5s ease;
+ }
 
-        @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        }
+ @keyframes popIn {
+     0% {
+         transform: translate(-50%, -50%) scale(0.5);
+         opacity: 0;
+     }
 
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
+     100% {
+         transform: translate(-50%, -50%) scale(1);
+         opacity: 1;
+     }
+ }
 
-            h1 {
-                font-size: 24px;
-                margin-bottom: 20px;
-            }
+ /* 반응형 디자인 */
+ @media (max-width: 768px) {
+     body {
+         padding: 10px;
+     }
 
-            .controls {
-                padding: 15px;
-            }
+     h1 {
+         font-size: 24px;
+         margin-bottom: 20px;
+     }
 
-            .preset-images {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 10px;
-            }
+     .controls {
+         padding: 15px;
+     }
 
-            .preset-image {
-                width: 100px;
-                height: 75px;
-            }
+     .preset-images {
+         grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+         gap: 10px;
+     }
 
-            .image-title {
-                font-size: 12px;
-            }
+     .preset-image {
+         width: 100px;
+         height: 75px;
+     }
 
-            .image-description {
-                font-size: 10px;
-            }
+     .image-title {
+         font-size: 12px;
+     }
 
-            .difficulty-controls {
-                gap: 5px;
-            }
+     .image-description {
+         font-size: 10px;
+     }
 
-            .difficulty-controls button {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
+     .difficulty-controls {
+         gap: 5px;
+     }
 
-            .info-item {
-                display: block;
-                margin: 5px 0;
-            }
+     .difficulty-controls button {
+         padding: 8px 15px;
+         font-size: 14px;
+     }
 
-            #puzzle-container, #pieces-container {
-                max-width: 95vw;
-                margin: 15px auto;
-            }
+     .info-item {
+         display: block;
+         margin: 5px 0;
+     }
 
-            .puzzle-piece {
-                border: 3px solid rgba(255,255,255,0.9);
-            }
+     #puzzle-container,
+     #pieces-container {
+         max-width: 95vw;
+         margin: 15px auto;
+     }
 
-            .puzzle-piece:hover {
-                transform: none; /* 모바일에서는 호버 효과 제거 */
-            }
-        }
+     .puzzle-piece {
+         border: 3px solid rgba(255, 255, 255, 0.9);
+     }
 
-        @media (max-width: 480px) {
-            .preset-images {
-                grid-template-columns: repeat(2, 1fr);
-            }
+     .puzzle-piece:hover {
+         transform: none;
+         /* 모바일에서는 호버 효과 제거 */
+     }
+ }
 
-            .preset-image {
-                width: 80px;
-                height: 60px;
-            }
+ @media (max-width: 480px) {
+     .preset-images {
+         grid-template-columns: repeat(2, 1fr);
+     }
 
-            .difficulty-controls button {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-        }
+     .preset-image {
+         width: 80px;
+         height: 60px;
+     }
 
-        /* 태블릿 */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            #puzzle-container, #pieces-container {
-                max-width: 80vw;
-            }
-        }
+     .difficulty-controls button {
+         padding: 6px 12px;
+         font-size: 12px;
+     }
+ }
+
+ /* 태블릿 */
+ @media (min-width: 769px) and (max-width: 1024px) {
+
+     #puzzle-container,
+     #pieces-container {
+         max-width: 80vw;
+     }
+ }

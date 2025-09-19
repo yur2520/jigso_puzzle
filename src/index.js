@@ -1,5 +1,8 @@
 import './styles.css';
 import image01 from './puzzle-image.png';
+import imageCake from './cake.jpeg';
+import imageAutumn from './autumn.jpeg';
+import ColorThief from 'colorthief';
 
 
 
@@ -36,19 +39,19 @@ const imageDatabase = {
         title: '화려한 꽃들'
     },
     space1: {
-        url: 'https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=800&h=600&fit=crop&crop=center',
-        ratio: 4 / 3,
-        title: '우주와 별'
+        url: imageCake,
+        ratio: 16 / 9,
+        title: '딸기 케이크'
     },
     ocean1: {
         url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop&crop=center',
         ratio: 4 / 3,
         title: '바다와 해변'
     },
-    city1: {
+    illust1: {
         url: image01,
         ratio: 4 / 3,
-        title: '도시 야경'
+        title: '꿈꾸는 산'
     }
 };
 
@@ -76,6 +79,7 @@ image.onload = () => {
     piecesContainer.style.width = `${puzzleWidth}px`;
     piecesContainer.style.minHeight = `${Math.max(400, puzzleHeight * 0.7)}px`;
 
+    applyDynamicTheme();
     // 난이도 버튼 활성화
     enableDifficultyButtons();
     showSuccess('이미지가 로드되었습니다! 난이도를 선택해주세요.');
@@ -98,8 +102,8 @@ function applyDynamicTheme() {
 }
 // 이미지 크기 최적화 함수
 function calculateOptimalSize() {
-    const maxWidth = Math.min(800, window.innerWidth * 0.95);
-    const maxHeight = Math.min(800, window.innerHeight * 0.95);
+    const maxWidth = Math.min(600, window.innerWidth * 0.95);
+    const maxHeight = Math.min(600, window.innerHeight * 0.85);
 
     // 이미지 비율에 따라 최적 크기 계산
     let targetWidth, targetHeight;
@@ -192,6 +196,9 @@ function startGame(pieceCount) {
     const cols = grid.cols;
     const rows = grid.rows;
 
+    gridCols = cols; 
+    gridRows = rows;
+
     // 각 조각의 너비와 높이를 계산합니다.
     pieceWidth = puzzleWidth / cols;
     pieceHeight = puzzleHeight / rows;
@@ -226,6 +233,8 @@ function startGame(pieceCount) {
             // 3. 각 조각의 정답 위치를 dataset에 저장해 둡니다.
             piece.dataset.correctX = `${x * pieceWidth}`;
             piece.dataset.correctY = `${y * pieceHeight}`;
+            piece.dataset.col = x; // 열 인덱스 저장
+            piece.dataset.row = y; // 행 인덱스 저장
 
             pieces.push(piece);
         }
@@ -499,12 +508,11 @@ function handleResize() {
             // 만약 조각이 이미 퍼즐 판에 맞춰진 상태('snapped')라면,
             // 새 크기에 맞게 위치도 다시 계산해줍니다.
             if (piece.classList.contains('snapped')) {
-                // dataset에 저장된 원래 위치 비율을 기반으로 새 위치 계산
-                const correctXIndex = parseFloat(piece.dataset.correctX) / (parseFloat(piece.style.width) || pieceWidth);
-                const correctYIndex = parseFloat(piece.dataset.correctY) / (parseFloat(piece.style.height) || pieceHeight);
-
-                piece.style.left = `${correctXIndex * pieceWidth}px`;
-                piece.style.top = `${correctYIndex * pieceHeight}px`;
+                 // 저장된 행/열 인덱스로 새 위치를 정확히 계산
+                const newLeft = piece.dataset.col * newPieceWidth;
+                const newTop = piece.dataset.row * newPieceHeight;
+                piece.style.left = `${newLeft}px`;
+                piece.style.top = `${newTop}px`;
             }
         });
     }
@@ -521,3 +529,12 @@ window.addEventListener('load', () => {
         firstPreset.click();
     }
 });
+
+document.querySelectorAll('.difficulty-controls button').forEach(button => {
+    button.addEventListener('click', () => {
+        const pieceCount = parseInt(button.dataset.difficulty);
+        startGame(pieceCount);
+    });
+});
+
+document.getElementById('closeCompletionMessage').addEventListener('click', hideCompletionMessage);

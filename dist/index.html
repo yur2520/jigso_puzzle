@@ -2,16 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>직소 퍼즐 게임</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-       
-    </style>
 <script defer src="bundle.js"></script></head>
 <body>
     <div class="container">
@@ -43,10 +35,10 @@
                     <div class="image-description">다채로운 색상</div>
                 </div>
                 <div class="preset-image-container" data-image="space1">
-                    <img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop&crop=center" 
-                         class="preset-image" alt="우주와 별">
-                    <div class="image-title">우주와 별</div>
-                    <div class="image-description">신비로운 우주</div>
+                    <img src="cake.jpeg" 
+                         class="preset-image" alt="딸기 케이크">
+                    <div class="image-title">딸기 케이크</div>
+                    <div class="image-description">달콤한 디저트</div>
                 </div>
                 <div class="preset-image-container" data-image="ocean1">
                     <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop&crop=center" 
@@ -54,9 +46,8 @@
                     <div class="image-title">바다와 해변</div>
                     <div class="image-description">시원한 바다 풍경</div>
                 </div>
-                <div class="preset-image-container" data-image="city1">
-                    <img src="puzzle-image.png" 
-                         class="preset-image" alt="일러스트">
+                <div class="preset-image-container" data-image="illust1">
+                   <img src="" class="preset-image" alt="꿈꾸는 산"> 
                     <div class="image-title">꿈꾸는 산</div>
                     <div class="image-description">자연 일러스트</div>
                 </div>
@@ -66,10 +57,10 @@
             <div class="loading" id="loadingMessage">이미지를 처리하는 중...</div>
             
             <div class="difficulty-controls">
-                <button onclick="startGame(12)" disabled>12피스 (쉬움)</button>
-                <button onclick="startGame(30)" disabled>30피스 (보통)</button>
-                <button onclick="startGame(50)" disabled>50피스 (어려움)</button>
-                <button onclick="startGame(100)" disabled>100피스 (매우 어려움)</button>
+                <button data-difficulty="12" disabled>12피스 (쉬움)</button>
+                <button data-difficulty="30" disabled>30피스 (보통)</button>
+                <button data-difficulty="50" disabled>50피스 (어려움)</button>
+                <button data-difficulty="100" disabled>100피스 (매우 어려움)</button>
             </div>
         </div>
 
@@ -87,11 +78,11 @@
         <h2>🎉 축하합니다! 🎉</h2>
         <p>퍼즐을 완성했습니다!</p>
         <p>완성 시간: <span id="finalTime"></span></p>
-        <button onclick="hideCompletionMessage()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">확인</button>
+        <button id="closeCompletionMessage" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">확인</button>
     </div>
 
   
 
-    </script>
+    
 </body>
 </html>
