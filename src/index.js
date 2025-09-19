@@ -2,6 +2,7 @@ import './styles.css';
 import image01 from './puzzle-image.png';
 
 
+
 // HTML에서 요소들을 가져옵니다.
 const puzzleContainer = document.getElementById('puzzle-container');
 const piecesContainer = document.getElementById('pieces-container');
