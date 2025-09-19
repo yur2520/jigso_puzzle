@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>직소 퍼즐 게임</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+       
+    </style>
+<script defer src="bundle.js"></script></head>
+<body>
+    <div class="container">
+        <h1>직소 퍼즐 게임 🧩</h1>
+        
+        <div class="controls">
+            <div class="image-selection">
+                <h3>이미지 선택</h3>
+                <p>아래 이미지 중 하나를 선택하여 퍼즐을 시작하세요:</p>
+            </div>
+            
+            <div class="preset-images">
+                <div class="preset-image-container" data-image="landscape1">
+                    <img src="https://images.unsplash.com/photo-1505490096310-204ef067fe6b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                         class="preset-image" alt="산과 호수">
+                    <div class="image-title">산과 호수</div>
+                    <div class="image-description">아름다운 자연 풍경</div>
+                </div>
+                <div class="preset-image-container" data-image="animals1">
+                    <img src="https://images.unsplash.com/photo-1615233500022-01d251f3eb33?q=80&w=687&auto=format&fit=crop&crop=center" 
+                         class="preset-image" alt="귀여운 강아지">
+                    <div class="image-title">귀여운 강아지</div>
+                    <div class="image-description">사랑스러운 반려동물</div>
+                </div>
+                <div class="preset-image-container" data-image="flowers1">
+                    <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=300&fit=crop&crop=center" 
+                         class="preset-image" alt="화려한 꽃들">
+                    <div class="image-title">화려한 꽃들</div>
+                    <div class="image-description">다채로운 색상</div>
+                </div>
+                <div class="preset-image-container" data-image="space1">
+                    <img src="https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=400&h=300&fit=crop&crop=center" 
+                         class="preset-image" alt="우주와 별">
+                    <div class="image-title">우주와 별</div>
+                    <div class="image-description">신비로운 우주</div>
+                </div>
+                <div class="preset-image-container" data-image="ocean1">
+                    <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=400&h=300&fit=crop&crop=center" 
+                         class="preset-image" alt="바다와 해변">
+                    <div class="image-title">바다와 해변</div>
+                    <div class="image-description">시원한 바다 풍경</div>
+                </div>
+                <div class="preset-image-container" data-image="city1">
+                    <img src="puzzle-image.png" 
+                         class="preset-image" alt="일러스트">
+                    <div class="image-title">꿈꾸는 산</div>
+                    <div class="image-description">자연 일러스트</div>
+                </div>
+            </div>
+            
+            <div class="error-message" id="errorMessage"></div>
+            <div class="loading" id="loadingMessage">이미지를 처리하는 중...</div>
+            
+            <div class="difficulty-controls">
+                <button onclick="startGame(12)" disabled>12피스 (쉬움)</button>
+                <button onclick="startGame(30)" disabled>30피스 (보통)</button>
+                <button onclick="startGame(50)" disabled>50피스 (어려움)</button>
+                <button onclick="startGame(100)" disabled>100피스 (매우 어려움)</button>
+            </div>
+        </div>
+
+        <div class="game-info" id="gameInfo">
+            <div class="info-item">완성: <span id="completedPieces">0</span>/<span id="totalPieces">0</span></div>
+            <div class="info-item">진행률: <span id="progressPercent">0</span>%</div>
+            <div class="info-item">시간: <span id="gameTime">00:00</span></div>
+        </div>
+
+        <div id="puzzle-container"></div>
+        <div id="pieces-container"></div>
+    </div>
+
+    <div class="completion-message" id="completionMessage">
+        <h2>🎉 축하합니다! 🎉</h2>
+        <p>퍼즐을 완성했습니다!</p>
+        <p>완성 시간: <span id="finalTime"></span></p>
+        <button onclick="hideCompletionMessage()" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">확인</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <script src="index.js">
+
+    </script>
+</body>
+</html>
