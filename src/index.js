@@ -25,32 +25,32 @@ let currentImageRatio = 1; // 이미지의 가로세로 비율
 const imageDatabase = {
     landscape1: {
         url: 'https://images.unsplash.com/photo-1505490096310-204ef067fe6b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        ratio: 4 / 3, // 가로가 더 긴 이미지
+        
         title: '산과 호수'
     },
     animals1: {
         url: 'https://images.unsplash.com/photo-1615233500022-01d251f3eb33?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        ratio: 3 / 4, // 세로가 더 긴 이미지
+        
         title: '귀여운 강아지'
     },
     flowers1: {
         url: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop&crop=center',
-        ratio: 4 / 3,
+        
         title: '화려한 꽃들'
     },
     space1: {
         url: imageCake,
-        ratio: 16 / 9,
+        
         title: '딸기 케이크'
     },
     ocean1: {
         url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop&crop=center',
-        ratio: 4 / 3,
+        
         title: '바다와 해변'
     },
     illust1: {
         url: image01,
-        ratio: 4 / 3,
+        
         title: '꿈꾸는 산'
     }
 };
@@ -70,10 +70,10 @@ let gridRows = 0;
 image.onload = () => {
     hideLoading();
 
-    // 이미지 비율에 맞춰 크기 계산
+    currentImageRatio = image.naturalWidth / image.naturalHeight;
     calculateOptimalSize();
 
-    // 퍼즐 판의 크기를 설정합니다.
+    // 퍼즐 판의 크기 설정
     puzzleContainer.style.width = `${puzzleWidth}px`;
     puzzleContainer.style.height = `${puzzleHeight}px`;
     piecesContainer.style.width = `${puzzleWidth}px`;
@@ -86,9 +86,8 @@ image.onload = () => {
 };
 
 function applyDynamicTheme() {
-    const colorThief = new ColorThief();
-    // getPalette(image, colorCount)는 이미지에서 지정된 개수의 주요 색상 배열을 반환합니다.
-    const palette = colorThief.getPalette(image, 2); // 2개의 주요 색상 추출
+    const colorThief = new ColorThief();    
+    const palette = colorThief.getPalette(image, 2); // 2개의 주요 테마색 추출
 
     if (palette && palette.length >= 2) {
         const primaryColor = `rgb(${palette[0].join(',')})`;
@@ -139,7 +138,6 @@ image.onerror = () => {
     disableDifficultyButtons();
 };
 
-// 파일 업로드 처리 제거됨 - 미리 정의된 이미지만 사용
 
 // 프리셋 이미지 선택 처리
 document.querySelectorAll('.preset-image-container').forEach(container => {
@@ -208,6 +206,10 @@ function startGame(pieceCount) {
     updateProgress();
 
     // 이중 for문을 이용해 이미지를 자르고 조각을 만듭니다.
+     // ✅ 1. 원본 이미지에서 한 조각이 차지할 '실제' 너비와 높이를 계산합니다.
+    const sourcePieceWidth = image.naturalWidth / cols;
+    const sourcePieceHeight = image.naturalHeight / rows;
+
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
             // 1. 캔버스를 이용해 이미지 자르기
@@ -216,10 +218,16 @@ function startGame(pieceCount) {
             canvas.height = pieceHeight;
             const context = canvas.getContext('2d');
 
+            // ✅ 2. drawImage에 원본 이미지 기준 좌표와 크기를 넘겨줍니다.
             context.drawImage(
                 image,
-                x * pieceWidth, y * pieceHeight, pieceWidth, pieceHeight,
-                0, 0, pieceWidth, pieceHeight
+                x * sourcePieceWidth,      // 원본에서 잘라낼 부분의 x 좌표
+                y * sourcePieceHeight,     // 원본에서 잘라낼 부분의 y 좌표
+                sourcePieceWidth,          // 원본에서 잘라낼 부분의 너비
+                sourcePieceHeight,         // 원본에서 잘라낼 부분의 높이
+                0, 0,                      // 캔버스에 그릴 x, y 좌표
+               pieceWidth,                // 캔버스에 그릴 너비
+                pieceHeight                // 캔버스에 그릴 높이
             );
 
             // 2. 잘라낸 이미지로 퍼즐 조각(div) 만들기
@@ -452,22 +460,6 @@ window.addEventListener('load', () => {
     }
 });
 
-// 창 크기 변경 시 반응형 조정
-window.addEventListener('resize', () => {
-    if (currentImageSrc && puzzleWidth && puzzleHeight) {
-        // 현재 진행 중인 게임이 있다면 크기만 조정
-        const maxWidth = Math.min(600, window.innerWidth * 0.8);
-        const maxHeight = Math.min(450, window.innerHeight * 0.4);
-
-        const ratio = Math.min(maxWidth / image.width, maxHeight / image.height);
-        const newPuzzleWidth = Math.floor(image.width * ratio);
-        const newPuzzleHeight = Math.floor(image.height * ratio);
-
-        puzzleContainer.style.width = `${newPuzzleWidth}px`;
-        puzzleContainer.style.height = `${newPuzzleHeight}px`;
-        piecesContainer.style.width = `${newPuzzleWidth}px`;
-    }
-});
 
 // 디바운스 함수: 이벤트가 연속으로 발생할 때 마지막 이벤트만 처리하여 성능을 최적화합니다.
 function debounce(func, wait) {
@@ -509,8 +501,8 @@ function handleResize() {
             // 새 크기에 맞게 위치도 다시 계산해줍니다.
             if (piece.classList.contains('snapped')) {
                  // 저장된 행/열 인덱스로 새 위치를 정확히 계산
-                const newLeft = piece.dataset.col * newPieceWidth;
-                const newTop = piece.dataset.row * newPieceHeight;
+                const newLeft = piece.dataset.col * PieceWidth;
+                const newTop = piece.dataset.row * PieceHeight;
                 piece.style.left = `${newLeft}px`;
                 piece.style.top = `${newTop}px`;
             }
@@ -524,6 +516,7 @@ window.addEventListener('resize', debounce(handleResize, 250)); // 250ms 간격�
 
 // 페이지 로드 시 첫 번째 프리셋 이미지 자동 선택
 window.addEventListener('load', () => {
+    setPreviewImages();
     const firstPreset = document.querySelector('.preset-image-container');
     if (firstPreset) {
         firstPreset.click();
@@ -538,3 +531,22 @@ document.querySelectorAll('.difficulty-controls button').forEach(button => {
 });
 
 document.getElementById('closeCompletionMessage').addEventListener('click', hideCompletionMessage);
+
+function setPreviewImages() {
+    // 모든 .preset-image-container 요소를 가져옵니다.
+    document.querySelectorAll('.preset-image-container').forEach(container => {
+        // data-image 속성에서 이미지 키(예: 'space1')를 읽어옵니다.
+        const imageKey = container.dataset.image;
+        // 이미지 데이터베이스에서 해당 키의 정보를 찾습니다.
+        const imageData = imageDatabase[imageKey];
+
+        if (imageData) {
+            // 컨테이너 안의 <img> 태그를 찾습니다.
+            const imgElement = container.querySelector('.preset-image');
+            if (imgElement) {
+                // 웹팩이 처리한 올바른 이미지 경로(imageData.url)를 src 속성에 할당합니다.
+                imgElement.src = imageData.url;
+            }
+        }
+    });
+}
