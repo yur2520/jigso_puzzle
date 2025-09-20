@@ -12,6 +12,7 @@ import imageCidy from './cindy.jpeg';
 import imageIcecream from './icecream.jpeg';
 import imageMacaron from './macaron.jpeg';
 import imageSnowWhite from './snow_white.jpeg';
+import imageBooks from './books.png';
 
 
 // HTML에서 요소들을 가져옵니다.
@@ -78,6 +79,10 @@ const imageDatabase = {
     dessert2: {
         url: imageIcecream,
         title: '아이스크림'
+    },
+    books1: {
+        url: imageBooks,
+        title: '서재'
     },
 
 };
@@ -336,8 +341,26 @@ function addDragAndDrop(piece) {
 
             piece.style.zIndex = 1000;
             piecesContainer.appendChild(piece);
+
+            moveEvents.forEach(ev => document.addEventListener(ev, onMove));
+            endEvents.forEach(ev => document.addEventListener(ev, onEnd, { once: true })); // { once: true }
         });
     });
+
+        function onMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        const pos = getEventPos(e);
+        piece.style.left = `${pos.x - offsetX}px`;
+        piece.style.top = `${pos.y - offsetY}px`;
+    }
+
+    function onEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        piece.style.zIndex = 1; }
+
+         moveEvents.forEach(ev => document.removeEventListener(ev, onMove));
 
     moveEvents.forEach(eventType => {
         document.addEventListener(eventType, (e) => {
@@ -348,7 +371,7 @@ function addDragAndDrop(piece) {
             piece.style.left = `${pos.x - offsetX}px`;
             piece.style.top = `${pos.y - offsetY}px`;
         });
-    });
+    }); 
 
     endEvents.forEach(eventType => {
         document.addEventListener(eventType, (e) => {
