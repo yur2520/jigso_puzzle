@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "homepage": "https://yur2520.github.io/jigso_puzzle",
   "scripts": {
     "start": "webpack serve --mode development",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "deploy": "gh-pages -d dist",
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
   "devDependencies": {
     "css-loader": "^7.1.2",
     "file-loader": "^6.2.0",
+    "gh-pages": "^6.3.0",
     "html-webpack-plugin": "^5.6.4",
     "style-loader": "^4.0.0",
     "webpack": "^5.101.3",
@@ -22,5 +25,7 @@
   },
   "dependencies": {
     "colorthief": "^2.6.0"
+    
   }
+  
 }

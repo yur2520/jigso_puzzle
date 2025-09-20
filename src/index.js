@@ -1,9 +1,17 @@
+import ColorThief from 'colorthief';
 import './styles.css';
+
 import image01 from './puzzle-image.png';
 import imageCake from './cake.jpeg';
 import imageAutumn from './autumn.jpeg';
-import ColorThief from 'colorthief';
-
+import imageSeaWater from './sea_watercolor.png';
+import imagehotcake from './hotcake.jpeg';
+import imageDream from './moonlight_dream.jpeg';
+import imagePome from './pome.jpeg';
+import imageCidy from './cindy.jpeg';
+import imageIcecream from './icecream.jpeg';
+import imageMacaron from './macaron.jpeg';
+import imageSnowWhite from './snow_white.jpeg';
 
 
 // HTML에서 요소들을 가져옵니다.
@@ -23,36 +31,55 @@ let currentImageRatio = 1; // 이미지의 가로세로 비율
 
 // 미리 정의된 이미지 정보
 const imageDatabase = {
-    landscape1: {
-        url: 'https://images.unsplash.com/photo-1505490096310-204ef067fe6b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        
-        title: '산과 호수'
+    img1: {
+        url: imageMacaron,
+        title: '마카롱'
     },
-    animals1: {
-        url: 'https://images.unsplash.com/photo-1615233500022-01d251f3eb33?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        
-        title: '귀여운 강아지'
+    tale2: {
+        url: imageSnowWhite,
+        title: '백설공주'
     },
     flowers1: {
         url: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop&crop=center',
-        
-        title: '화려한 꽃들'
+        title: '화려한 꽃'
     },
-    space1: {
+    cake1: {
         url: imageCake,
-        
         title: '딸기 케이크'
     },
     ocean1: {
-        url: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=800&h=600&fit=crop&crop=center',
-        
+        url: imageSeaWater,
         title: '바다와 해변'
     },
     illust1: {
         url: image01,
-        
         title: '꿈꾸는 산'
-    }
+    },
+    platelay1: {
+        url: imageAutumn,
+        title: '가을의 여유'
+    },
+    dessert3: {
+        url: imagehotcake,
+        title: '핫케이크'
+    },
+    moonlight1: {
+        url: imageDream,
+        title: '꿈꾸는 밤'
+    },
+    tale1: {
+        url: imageCidy,
+        title: '신데렐라'
+    },
+    puppy1: {
+        url: imagePome,
+        title: '강아지유화'
+    },
+    dessert2: {
+        url: imageIcecream,
+        title: '아이스크림'
+    },
+
 };
 
 // 게임 상태를 관리할 변수들
@@ -86,7 +113,7 @@ image.onload = () => {
 };
 
 function applyDynamicTheme() {
-    const colorThief = new ColorThief();    
+    const colorThief = new ColorThief();
     const palette = colorThief.getPalette(image, 2); // 2개의 주요 테마색 추출
 
     if (palette && palette.length >= 2) {
@@ -194,7 +221,7 @@ function startGame(pieceCount) {
     const cols = grid.cols;
     const rows = grid.rows;
 
-    gridCols = cols; 
+    gridCols = cols;
     gridRows = rows;
 
     // 각 조각의 너비와 높이를 계산합니다.
@@ -206,7 +233,7 @@ function startGame(pieceCount) {
     updateProgress();
 
     // 이중 for문을 이용해 이미지를 자르고 조각을 만듭니다.
-     // ✅ 1. 원본 이미지에서 한 조각이 차지할 '실제' 너비와 높이를 계산합니다.
+    // ✅ 1. 원본 이미지에서 한 조각이 차지할 '실제' 너비와 높이를 계산합니다.
     const sourcePieceWidth = image.naturalWidth / cols;
     const sourcePieceHeight = image.naturalHeight / rows;
 
@@ -226,7 +253,7 @@ function startGame(pieceCount) {
                 sourcePieceWidth,          // 원본에서 잘라낼 부분의 너비
                 sourcePieceHeight,         // 원본에서 잘라낼 부분의 높이
                 0, 0,                      // 캔버스에 그릴 x, y 좌표
-               pieceWidth,                // 캔버스에 그릴 너비
+                pieceWidth,                // 캔버스에 그릴 너비
                 pieceHeight                // 캔버스에 그릴 높이
             );
 
@@ -407,10 +434,9 @@ function showSuccess(message) {
     // 성공 메시지는 에러 메시지 스타일을 재사용하되 색상만 변경
     errorMessage.textContent = message;
     errorMessage.style.display = 'block';
-    errorMessage.style.background = '#4CAF50';
     setTimeout(() => {
         errorMessage.style.display = 'none';
-        errorMessage.style.background = '#f44336';
+
     }, 3000);
 }
 
@@ -452,15 +478,6 @@ function hideCompletionMessage() {
     completionMessage.classList.remove('show');
 }
 
-// 페이지 로드 시 첫 번째 프리셋 이미지 자동 선택
-window.addEventListener('load', () => {
-    const firstPreset = document.querySelector('.preset-image');
-    if (firstPreset) {
-        firstPreset.click();
-    }
-});
-
-
 // 디바운스 함수: 이벤트가 연속으로 발생할 때 마지막 이벤트만 처리하여 성능을 최적화합니다.
 function debounce(func, wait) {
     let timeout;
@@ -497,12 +514,9 @@ function handleResize() {
             piece.style.width = `${pieceWidth}px`;
             piece.style.height = `${pieceHeight}px`;
 
-            // 만약 조각이 이미 퍼즐 판에 맞춰진 상태('snapped')라면,
-            // 새 크기에 맞게 위치도 다시 계산해줍니다.
             if (piece.classList.contains('snapped')) {
-                 // 저장된 행/열 인덱스로 새 위치를 정확히 계산
-                const newLeft = piece.dataset.col * PieceWidth;
-                const newTop = piece.dataset.row * PieceHeight;
+                const newLeft = piece.dataset.col * pieceWidth;
+                const newTop = piece.dataset.row * pieceHeight;
                 piece.style.left = `${newLeft}px`;
                 piece.style.top = `${newTop}px`;
             }
@@ -517,6 +531,7 @@ window.addEventListener('resize', debounce(handleResize, 250)); // 250ms 간격�
 // 페이지 로드 시 첫 번째 프리셋 이미지 자동 선택
 window.addEventListener('load', () => {
     setPreviewImages();
+    setupCarousel(); // 캐러셀 기능 설정 함수 호출
     const firstPreset = document.querySelector('.preset-image-container');
     if (firstPreset) {
         firstPreset.click();
@@ -549,4 +564,55 @@ function setPreviewImages() {
             }
         }
     });
+}
+
+// --- ✨ 새로운 캐러셀 기능 함수 ---
+function setupCarousel() {
+    const track = document.querySelector('.preset-images');
+    const container = document.querySelector('.carousel-container');
+    const nextButton = document.getElementById('nextBtn');
+    const prevButton = document.getElementById('prevBtn');
+    let currentIndex = 0;
+
+    function updateCarousel() {
+        const containerWidth = container.clientWidth;
+        // 한 번에 이동할 거리를 컨테이너 너비로 설정
+        const moveDistance = containerWidth;
+        const totalWidth = track.scrollWidth;
+        const maxScroll = totalWidth - containerWidth;
+
+        // 이동할 위치 계산
+        let newPosition = currentIndex * -moveDistance;
+
+        // 경계 확인
+        if (newPosition < -maxScroll) {
+            newPosition = -maxScroll;
+        }
+        if (newPosition > 0) {
+            newPosition = 0;
+        }
+
+        track.style.transform = `translateX(${newPosition}px)`;
+    }
+
+    nextButton.addEventListener('click', () => {
+        const containerWidth = container.clientWidth;
+        const totalWidth = track.scrollWidth;
+        // 다음 인덱스로 이동, 단 전체 너비를 넘지 않도록
+        if ((currentIndex + 1) * containerWidth < totalWidth) {
+            currentIndex++;
+            updateCarousel();
+        }
+    });
+
+    prevButton.addEventListener('click', () => {
+        // 이전 인덱스로 이동, 단 0보다 작아지지 않도록
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+        }
+    });
+
+    // 창 크기가 변경될 때 캐러셀 위치를 재조정
+    window.addEventListener('resize', debounce(updateCarousel, 250));
 }
