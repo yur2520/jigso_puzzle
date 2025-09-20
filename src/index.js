@@ -330,77 +330,70 @@ function addDragAndDrop(piece) {
             { x: e.clientX, y: e.clientY };
     }
 
-    startEvents.forEach(eventType => {
-        piece.addEventListener(eventType, (e) => {
-            e.preventDefault();
-            const pos = getEventPos(e);
-            isDragging = true;
-
-            offsetX = pos.x - piece.offsetLeft;
-            offsetY = pos.y - piece.offsetTop;
-
-            piece.style.zIndex = 1000;
-            piecesContainer.appendChild(piece);
-
-            moveEvents.forEach(ev => document.addEventListener(ev, onMove));
-            endEvents.forEach(ev => document.addEventListener(ev, onEnd, { once: true })); // { once: true }
-        });
-    });
-
-        function onMove(e) {
+    // --- 이벤트 핸들러들을 이름 있는 함수로 정의 ---
+    function handleMove(e) {
         if (!isDragging) return;
         e.preventDefault();
+
         const pos = getEventPos(e);
         piece.style.left = `${pos.x - offsetX}px`;
         piece.style.top = `${pos.y - offsetY}px`;
     }
 
-    function onEnd(e) {
+    function handleEnd(e) {
         if (!isDragging) return;
         isDragging = false;
-        piece.style.zIndex = 1; }
+        piece.style.zIndex = ''; // z-index를 CSS 기본값으로 되돌림
 
-         moveEvents.forEach(ev => document.removeEventListener(ev, onMove));
+        // document에 추가했던 move와 end 리스너는 여기서 제거
+        moveEvents.forEach(ev => document.removeEventListener(ev, handleMove));
+        endEvents.forEach(ev => document.removeEventListener(ev, handleEnd));
 
-    moveEvents.forEach(eventType => {
-        document.addEventListener(eventType, (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
+        // 정답 위치 확인 및 스냅
+        const pieceRect = piece.getBoundingClientRect();
+        const containerRect = puzzleContainer.getBoundingClientRect();
+        const correctX = parseFloat(piece.dataset.correctX) + containerRect.left;
+        const correctY = parseFloat(piece.dataset.correctY) + containerRect.top;
 
-            const pos = getEventPos(e);
-            piece.style.left = `${pos.x - offsetX}px`;
-            piece.style.top = `${pos.y - offsetY}px`;
-        });
-    }); 
+        const tolerance = Math.min(30, Math.min(pieceWidth, pieceHeight) * 0.3);
 
-    endEvents.forEach(eventType => {
-        document.addEventListener(eventType, (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            piece.style.zIndex = 1;
+        if (Math.abs(pieceRect.left - correctX) < tolerance &&
+            Math.abs(pieceRect.top - correctY) < tolerance) {
 
-            // 정답 위치 확인 및 스냅
-            const pieceRect = piece.getBoundingClientRect();
-            const containerRect = puzzleContainer.getBoundingClientRect();
-            const correctX = parseFloat(piece.dataset.correctX) + containerRect.left;
-            const correctY = parseFloat(piece.dataset.correctY) + containerRect.top;
+            piece.style.left = `${parseFloat(piece.dataset.correctX)}px`;
+            piece.style.top = `${parseFloat(piece.dataset.correctY)}px`;
 
-            const tolerance = Math.min(30, Math.min(pieceWidth, pieceHeight) * 0.3);
+            piece.classList.add('snapped');
+            puzzleContainer.appendChild(piece);
 
-            if (Math.abs(pieceRect.left - correctX) < tolerance &&
-                Math.abs(pieceRect.top - correctY) < tolerance) {
+            // ✅ 핵심 수정: 조각이 맞춰지면, 드래그 시작 이벤트 리스너를 제거하여 고정시킴
+            startEvents.forEach(ev => piece.removeEventListener(ev, handleStart));
 
-                piece.style.left = `${parseFloat(piece.dataset.correctX)}px`;
-                piece.style.top = `${parseFloat(piece.dataset.correctY)}px`;
+            completedCount++;
+            updateProgress();
+            checkCompletion();
+        }
+    }
 
-                piece.classList.add('snapped');
-                puzzleContainer.appendChild(piece);
+    function handleStart(e) {
+        e.preventDefault();
+        const pos = getEventPos(e);
+        isDragging = true;
 
-                completedCount++;
-                updateProgress();
-                checkCompletion();
-            }
-        });
+        offsetX = pos.x - piece.offsetLeft;
+        offsetY = pos.y - piece.offsetTop;
+
+        piece.style.zIndex = 1000;
+        piecesContainer.appendChild(piece);
+        
+        // 드래그가 시작될 때 document에 move와 end 리스너를 추가
+        moveEvents.forEach(ev => document.addEventListener(ev, handleMove));
+        endEvents.forEach(ev => document.addEventListener(ev, handleEnd));
+    }
+
+    // --- 처음에 조각에 '시작' 이벤트 리스너만 붙여줌 ---
+    startEvents.forEach(eventType => {
+        piece.addEventListener(eventType, handleStart);
     });
 }
 
