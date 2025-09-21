@@ -1,19 +1,6 @@
 import ColorThief from 'colorthief';
 import './styles.css';
-/*
-import image01 from './puzzle-image.png';
-import imageCake from './cake.jpeg';
-import imageAutumn from './autumn.jpeg';
-import imageSeaWater from './sea_watercolor.png';
-import imagehotcake from './hotcake.jpeg';
-import imageDream from './moonlight_dream.jpeg';
-import imagePome from './pome.jpeg';
-import imageCidy from './cindy.jpeg';
-import imageIcecream from './icecream.jpeg';
-import imageMacaron from './macaron.jpeg';
-import imageSnowWhite from './snow_white.jpeg';
-import imageBooks from './books.png';
-*/
+
 const imagesContext = require.context('./images', false, /\.(png|jpeg)$/);
 const imageDatabase = {};
 
@@ -51,9 +38,7 @@ imageDatabase['flowers1'] = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 이전 단계에서 만든 imageDatabase 객체
    
-
     // 이미지를 담을 부모 컨테이너
     const presetImagesContainer = document.querySelector('.preset-images');
 
@@ -103,62 +88,6 @@ let currentImageSrc = null;
 let currentImageRatio = 1; // 이미지의 가로세로 비율
 
 
-/*
-const imageDatabase = {
-    img1: {
-        url: imageMacaron,
-        title: '마카롱'
-    },
-    tale2: {
-        url: imageSnowWhite,
-        title: '백설공주'
-    },
-    flowers1: {
-        url: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop&crop=center',
-        title: '화려한 꽃'
-    },
-    cake1: {
-        url: imageCake,
-        title: '딸기 케이크'
-    },
-    ocean1: {
-        url: imageSeaWater,
-        title: '바다와 해변'
-    },
-    illust1: {
-        url: image01,
-        title: '꿈꾸는 산'
-    },
-    platelay1: {
-        url: imageAutumn,
-        title: '가을의 여유'
-    },
-    dessert3: {
-        url: imagehotcake,
-        title: '핫케이크'
-    },
-    moonlight1: {
-        url: imageDream,
-        title: '꿈꾸는 밤'
-    },
-    tale1: {
-        url: imageCidy,
-        title: '신데렐라'
-    },
-    puppy1: {
-        url: imagePome,
-        title: '강아지유화'
-    },
-    dessert2: {
-        url: imageIcecream,
-        title: '아이스크림'
-    },
-    books1: {
-        url: imageBooks,
-        title: '서재'
-    },
-
-}; */
 
 // 게임 상태를 관리할 변수들
 let pieces = [];
@@ -243,28 +172,7 @@ image.onerror = () => {
     disableDifficultyButtons();
 };
 
-/*
-// 프리셋 이미지 선택 처리
-document.querySelectorAll('.preset-image-container').forEach(container => {
-    container.addEventListener('click', () => {
-        const imageKey = container.dataset.image;
-        const imageData = imageDatabase[imageKey];
 
-        if (!imageData) {
-            showError('이미지 정보를 찾을 수 없습니다.');
-            return;
-        }
-
-        // 선택 표시 업데이트
-        document.querySelectorAll('.preset-image').forEach(img => img.classList.remove('selected'));
-        container.querySelector('.preset-image').classList.add('selected');
-
-        showLoading();
-        currentImageRatio = imageData.ratio;
-        loadImage(imageData.url, imageData.title);
-    });
-}); */ 
-//하단의 코드와 중복이어서 삭제
 
 // 이미지 로드 함수
 function loadImage(imageSrc, title = '') {
@@ -287,7 +195,7 @@ function resetGame() {
 // 난이도 버튼을 누르면 이 함수가 호출됩니다.
 function startGame(pieceCount) {
     if (!currentImageSrc) {
-        showError('먼저 이미지를 선택해주세요.');
+        showError('이미지를 먼저 선택해주세요.');
         return;
     }
 
@@ -311,44 +219,24 @@ function startGame(pieceCount) {
     document.getElementById('totalPieces').textContent = pieceCount;
     updateProgress();
 
-    // 이중 for문을 이용해 이미지를 자르고 조각을 만듭니다.
-    // ✅ 1. 원본 이미지에서 한 조각이 차지할 '실제' 너비와 높이를 계산합니다.
-    const sourcePieceWidth = image.naturalWidth / cols;
-    const sourcePieceHeight = image.naturalHeight / rows;
-
+ const imageUrl = image.src; 
+    // ✅ 이미지 URL을 직접 사용하여 조각의 배경으로 지정
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-            // 1. 캔버스를 이용해 이미지 자르기
-            const canvas = document.createElement('canvas');
-            canvas.width = pieceWidth;
-            canvas.height = pieceHeight;
-            const context = canvas.getContext('2d');
-
-            // ✅ 2. drawImage에 원본 이미지 기준 좌표와 크기를 넘겨줍니다.
-            context.drawImage(
-                image,
-                x * sourcePieceWidth,      // 원본에서 잘라낼 부분의 x 좌표
-                y * sourcePieceHeight,     // 원본에서 잘라낼 부분의 y 좌표
-                sourcePieceWidth,          // 원본에서 잘라낼 부분의 너비
-                sourcePieceHeight,         // 원본에서 잘라낼 부분의 높이
-                0, 0,                      // 캔버스에 그릴 x, y 좌표
-                pieceWidth,                // 캔버스에 그릴 너비
-                pieceHeight                // 캔버스에 그릴 높이
-            );
-
-            // 2. 잘라낸 이미지로 퍼즐 조각(div) 만들기
             const piece = document.createElement('div');
             piece.className = 'puzzle-piece';
             piece.style.width = `${pieceWidth}px`;
             piece.style.height = `${pieceHeight}px`;
-            piece.style.backgroundImage = `url(${canvas.toDataURL()})`;
-            piece.style.backgroundSize = 'cover';
 
-            // 3. 각 조각의 정답 위치를 dataset에 저장해 둡니다.
+            // ✅ CSS background-image와 background-position을 활용합니다.
+            piece.style.backgroundImage = `url(${imageUrl})`;
+            piece.style.backgroundSize = `${puzzleWidth}px ${puzzleHeight}px`; // 전체 이미지 크기
+            piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
+
             piece.dataset.correctX = `${x * pieceWidth}`;
             piece.dataset.correctY = `${y * pieceHeight}`;
-            piece.dataset.col = x; // 열 인덱스 저장
-            piece.dataset.row = y; // 행 인덱스 저장
+            piece.dataset.col = x;
+            piece.dataset.row = y;
 
             pieces.push(piece);
         }
@@ -375,25 +263,39 @@ function getGridSize(pieceCount) {
 function shuffleAndPlacePieces() {
     pieces.sort(() => Math.random() - 0.5);
 
+    const fragment = document.createDocumentFragment();
+
     pieces.forEach((piece, index) => {
         const containerRect = piecesContainer.getBoundingClientRect();
         const maxX = Math.max(0, containerRect.width - pieceWidth);
         const maxY = Math.max(0, containerRect.height - pieceHeight);
 
-        piece.style.left = `${Math.random() * maxX}px`;
-        piece.style.top = `${Math.random() * maxY}px`;
-        piece.style.zIndex = index;
+       /* piece.style.left = `${Math.random() * maxX}px`;
+        piece.style.top = `${Math.random() * maxY}px`;*/
+        
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+        piece.style.transform = `translate(${randomX}px, ${randomY}px)`;
+        piece.dataset.currentX = randomX;
+        piece.dataset.currentY = randomY;
+        
+        piece.style.zIndex = index; 
 
-        piecesContainer.appendChild(piece);
+fragment.appendChild(piece);
+        // piecesContainer.appendChild(piece);
         addDragAndDrop(piece);
+
+        piecesContainer.appendChild(fragment);
     });
 }
 
 function addDragAndDrop(piece) {
     let isDragging = false;
-    let offsetX, offsetY;
+    let dragStartX, dragStartY;
+    let latestPos = { x: 0, y: 0 };
+    let animationFrameId = null;
 
-    // 마우스와 터치 이벤트 모두 지원
+
     const startEvents = ['mousedown', 'touchstart'];
     const moveEvents = ['mousemove', 'touchmove'];
     const endEvents = ['mouseup', 'touchend'];
@@ -404,43 +306,69 @@ function addDragAndDrop(piece) {
             { x: e.clientX, y: e.clientY };
     }
 
-    // --- 이벤트 핸들러들을 이름 있는 함수로 정의 ---
-    function handleMove(e) {
+     function render() {
         if (!isDragging) return;
-        e.preventDefault();
 
-        const pos = getEventPos(e);
-        piece.style.left = `${pos.x - offsetX}px`;
-        piece.style.top = `${pos.y - offsetY}px`;
+        const newX = latestPos.x - dragStartX;
+        const newY = latestPos.y - dragStartY;
+
+        piece.style.transform = `translate(${newX}px, ${newY}px)`;
+        
+        // 다음 프레임에 render 함수를 다시 호출하도록 예약
+        animationFrameId = requestAnimationFrame(render);
     }
 
-    function handleEnd(e) {
+     function handleMove(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+         latestPos = getEventPos(e); 
+       
+    }
+
+     function handleEnd(e) {
         if (!isDragging) return;
         isDragging = false;
-        piece.style.zIndex = ''; // z-index를 CSS 기본값으로 되돌림
 
-        // document에 추가했던 move와 end 리스너는 여기서 제거
-        moveEvents.forEach(ev => document.removeEventListener(ev, handleMove));
-        endEvents.forEach(ev => document.removeEventListener(ev, handleEnd));
+        cancelAnimationFrame(animationFrameId); 
 
-        // 정답 위치 확인 및 스냅
-        const pieceRect = piece.getBoundingClientRect();
-        const containerRect = puzzleContainer.getBoundingClientRect();
-        const correctX = parseFloat(piece.dataset.correctX) + containerRect.left;
-        const correctY = parseFloat(piece.dataset.correctY) + containerRect.top;
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
 
-        const tolerance = Math.min(30, Math.min(pieceWidth, pieceHeight) * 0.3);
 
-        if (Math.abs(pieceRect.left - correctX) < tolerance &&
-            Math.abs(pieceRect.top - correctY) < tolerance) {
+        piece.style.zIndex = ''; // z-index 초기화
 
-            piece.style.left = `${parseFloat(piece.dataset.correctX)}px`;
-            piece.style.top = `${parseFloat(piece.dataset.correctY)}px`;
+        // 퍼즐판과 조각 컨테이너의 경계 정보 가져오기
+        const puzzleRect = puzzleContainer.getBoundingClientRect();
+        //const piecesRect = piecesContainer.getBoundingClientRect();
+        const currentRect = piece.getBoundingClientRect();
 
+        // 정답 위치 (퍼즐판 기준)
+        const correctX = parseFloat(piece.dataset.correctX);
+        const correctY = parseFloat(piece.dataset.correctY);
+
+        const finalX = latestPos.x - dragStartX;
+        const finalY = latestPos.y - dragStartY;
+        piece.style.transform = `translate(${finalX}px, ${finalY}px)`;
+
+        // 현재 조각 위치 (퍼즐판 기준 상대 좌표로 변환)
+        const currentRelativeX = currentRect.left - puzzleRect.left;
+        const currentRelativeY = currentRect.top - puzzleRect.top;
+
+
+        const tolerance = Math.min(30, pieceWidth * 0.3); // 허용 오차
+
+        // 정답 위치와 현재 위치 비교
+        if (Math.abs(currentRelativeX - correctX) < tolerance &&
+            Math.abs(currentRelativeY - correctY) < tolerance) {
+
+            // 정답 위치에 스냅
+            piece.style.transform = `translate(${correctX}px, ${correctY}px)`;
             piece.classList.add('snapped');
-            puzzleContainer.appendChild(piece);
+            puzzleContainer.appendChild(piece); // 부모를 퍼즐판으로 변경
 
-            // ✅ 핵심 수정: 조각이 맞춰지면, 드래그 시작 이벤트 리스너를 제거하여 고정시킴
+            // 드래그 이벤트 리스너 제거하여 고정
             startEvents.forEach(ev => piece.removeEventListener(ev, handleStart));
 
             completedCount++;
@@ -449,22 +377,32 @@ function addDragAndDrop(piece) {
         }
     }
 
+
     function handleStart(e) {
         e.preventDefault();
         const pos = getEventPos(e);
         isDragging = true;
 
-        offsetX = pos.x - piece.offsetLeft;
-        offsetY = pos.y - piece.offsetTop;
+         latestPos = pos; 
 
-        piece.style.zIndex = 1000;
-        piecesContainer.appendChild(piece);
-        
-        // 드래그가 시작될 때 document에 move와 end 리스너를 추가
+        // 조각을 piecesContainer로 다시 옮겨 드래그 시작
+        if (piece.parentElement !== piecesContainer) {
+            piecesContainer.appendChild(piece);
+        }
+
+        // 현재 transform 값을 가져와서 드래그 시작점으로 설정
+        const currentTransform = new DOMMatrix(getComputedStyle(piece).transform);
+        dragStartX = pos.x - currentTransform.m41;
+        dragStartY = pos.y - currentTransform.m42;
+
+
+        piece.style.zIndex = 1000; // 드래그하는 조각을 맨 위로
+
+        animationFrameId = requestAnimationFrame(render);
+
         moveEvents.forEach(ev => document.addEventListener(ev, handleMove));
         endEvents.forEach(ev => document.addEventListener(ev, handleEnd));
     }
-
     // --- 처음에 조각에 '시작' 이벤트 리스너만 붙여줌 ---
     startEvents.forEach(eventType => {
         piece.addEventListener(eventType, handleStart);
@@ -604,11 +542,21 @@ function handleResize() {
             piece.style.width = `${pieceWidth}px`;
             piece.style.height = `${pieceHeight}px`;
 
+             piece.style.backgroundSize = `${puzzleWidth}px ${puzzleHeight}px`;
+
+
             if (piece.classList.contains('snapped')) {
-                const newLeft = piece.dataset.col * pieceWidth;
-                const newTop = piece.dataset.row * pieceHeight;
-                piece.style.left = `${newLeft}px`;
-                piece.style.top = `${newTop}px`;
+               const newLeft = piece.dataset.col * pieceWidth;
+    const newTop = piece.dataset.row * pieceHeight;
+    piece.style.transform = `translate(${newLeft}px, ${newTop}px)`;
+            }
+            else {
+                // 스냅되지 않은 조각의 위치도 re-calculate 필요
+                const currentX = parseFloat(piece.dataset.currentX) * (puzzleWidth / oldPuzzleWidth);
+                const currentY = parseFloat(piece.dataset.currentY) * (puzzleHeight / oldPuzzleHeight);
+                piece.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                piece.dataset.currentX = currentX;
+                piece.dataset.currentY = currentY;
             }
         });
     }
@@ -617,16 +565,6 @@ function handleResize() {
 
 // 창 크기 변경 시 반응형 조정 (디바운스 적용)
 window.addEventListener('resize', debounce(handleResize, 250)); // 250ms 간격으로 실행
-
-/*
-window.addEventListener('load', () => {
-    setPreviewImages();
-    setupCarousel(); // 캐러셀 기능 설정 함수 호출
-    const firstPreset = document.querySelector('.preset-image-container');
-    if (firstPreset) {
-        firstPreset.click();
-    }
-});  */
 
 document.querySelector('.preset-images').addEventListener('click', (e) => {
     const container = e.target.closest('.preset-image-container');
@@ -656,20 +594,6 @@ document.querySelectorAll('.difficulty-controls button').forEach(button => {
 
 document.getElementById('closeCompletionMessage').addEventListener('click', hideCompletionMessage);
 
-/*
-function setPreviewImages() {    
-    document.querySelectorAll('.preset-image-container').forEach(container => {       
-        const imageKey = container.dataset.image;        
-        const imageData = imageDatabase[imageKey];
-        if (imageData) {            
-            const imgElement = container.querySelector('.preset-image');
-            if (imgElement) {               
-                imgElement.src = imageData.url;
-                imgElement.alt = imageData.title;
-            }
-        }
-    });
-} */
 
 // --- ✨ 새로운 캐러셀 기능 함수 ---
 function setupCarousel() {
