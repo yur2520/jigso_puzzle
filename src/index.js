@@ -206,7 +206,6 @@ function startGame(pieceCount) {
     showGameInfo();
     startTimer();
 
-    // 난이도에 따라 퍼즐을 몇x몇으로 나눌지 결정합니다.
     const grid = getGridSize(pieceCount);
     const cols = grid.cols;
     const rows = grid.rows;
@@ -214,33 +213,61 @@ function startGame(pieceCount) {
     gridCols = cols;
     gridRows = rows;
 
-    // 각 조각의 너비와 높이를 계산합니다.
     pieceWidth = puzzleWidth / cols;
     pieceHeight = puzzleHeight / rows;
 
-    // 총 피스 수 업데이트
     document.getElementById('totalPieces').textContent = pieceCount;
     updateProgress();
 
- const imageUrl = image.src; 
-    // ✅ 이미지 URL을 직접 사용하여 조각의 배경으로 지정
+    // --- 👇 이미지 분할 로직 시작 ---
+
+    // 1. 보이지 않는 캔버스 생성
+    const canvas = document.createElement('canvas');
+    canvas.width = puzzleWidth;
+    canvas.height = puzzleHeight;
+    const context = canvas.getContext('2d');
+    
+    // 2. 캔버스에 원본 이미지를 그림
+    context.drawImage(image, 0, 0, puzzleWidth, puzzleHeight);
+
+    // 3. 각 조각을 순회하며 작은 이미지 생성
     for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
+            // 캔버스의 특정 영역에서 이미지 데이터를 추출 (data URL 형식)
+            const pieceCanvas = document.createElement('canvas');
+            pieceCanvas.width = pieceWidth;
+            pieceCanvas.height = pieceHeight;
+            const pieceContext = pieceCanvas.getContext('2d');
+            
+            // 원본 캔버스에서 조각만큼의 이미지를 복사해 옴
+            pieceContext.drawImage(
+                canvas,           // 원본 캔버스
+                x * pieceWidth,   // 원본에서 복사할 x 위치
+                y * pieceHeight,  // 원본에서 복사할 y 위치
+                pieceWidth,       // 복사할 너비
+                pieceHeight,      // 복사할 높이
+                0, 0,             // 새 캔버스에 그릴 위치 (0,0)
+                pieceWidth,       // 새로 그릴 너비
+                pieceHeight       // 새로 그릴 높이
+            );
+            
+            // 추출한 이미지 데이터를 URL로 변환
+            const pieceImageUrl = pieceCanvas.toDataURL();
+
             const piece = document.createElement('div');
             piece.className = 'puzzle-piece';
             piece.style.width = `${pieceWidth}px`;
             piece.style.height = `${pieceHeight}px`;
 
-            // ✅ CSS background-image와 background-position을 활용합니다.
-            piece.style.backgroundImage = `url(${imageUrl})`;
-            piece.style.backgroundSize = `${puzzleWidth}px ${puzzleHeight}px`; // 전체 이미지 크기
-            piece.style.backgroundPosition = `-${x * pieceWidth}px -${y * pieceHeight}px`;
+            // 4. 이제 각 조각은 자신만의 작은 이미지를 배경으로 가짐
+            piece.style.backgroundImage = `url(${pieceImageUrl})`;
+            
+            // 더 이상 background-position과 background-size는 필요 없음
+            piece.style.backgroundSize = 'cover'; 
 
             piece.dataset.correctX = `${x * pieceWidth}`;
             piece.dataset.correctY = `${y * pieceHeight}`;
-            piece.dataset.col = x;
-            piece.dataset.row = y;
-
+            
             pieces.push(piece);
         }
     }
