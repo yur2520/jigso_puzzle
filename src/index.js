@@ -1,6 +1,6 @@
 import ColorThief from 'colorthief';
 import './styles.css';
-
+/*
 import image01 from './puzzle-image.png';
 import imageCake from './cake.jpeg';
 import imageAutumn from './autumn.jpeg';
@@ -13,6 +13,79 @@ import imageIcecream from './icecream.jpeg';
 import imageMacaron from './macaron.jpeg';
 import imageSnowWhite from './snow_white.jpeg';
 import imageBooks from './books.png';
+*/
+const imagesContext = require.context('./images', false, /\.(png|jpeg)$/);
+const imageDatabase = {};
+
+const titleMap = {
+    'puzzle-image': '꿈꾸는 산',
+    'cake': '딸기 케이크',
+    'autumn': '가을의 여유',
+    'sea_watercolor': '바다와 해변',
+    'hotcake': '핫케이크',
+    'moonlight_dream': '꿈꾸는 밤',
+    'pome': '강아지유화',
+    'cindy': '신데렐라',
+    'icecream': '아이스크림',
+    'macaron': '마카롱',
+    'snow_white': '백설공주',
+    'books': '서재',
+};
+
+imagesContext.keys().forEach(filePath => {
+  // './macaron.jpeg' -> 'macaron'
+  const id = filePath.replace('./', '').split('.')[0]; 
+  const imageUrl = imagesContext(filePath);
+  
+  imageDatabase[id] = {
+    url: imageUrl,
+    title: titleMap[id] || '제목 없음'
+  };
+});
+
+
+// 외부 URL은 여전히 별도로 추가해줍니다.
+imageDatabase['flowers1'] = {
+    url: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&h=600&fit=crop&crop=center',
+    title: '화려한 꽃'
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 이전 단계에서 만든 imageDatabase 객체
+   
+
+    // 이미지를 담을 부모 컨테이너
+    const presetImagesContainer = document.querySelector('.preset-images');
+
+    // imageDatabase 객체를 순회하며 HTML 요소를 생성하고 추가합니다.
+    for (const imageId in imageDatabase) {
+        if (imageDatabase.hasOwnProperty(imageId)) {
+            const imageData = imageDatabase[imageId];
+
+            // 1. div.preset-image-container 요소 생성
+            const containerDiv = document.createElement('div');
+            containerDiv.classList.add('preset-image-container');
+            containerDiv.dataset.image = imageId;
+
+            // 2. img.preset-image 요소 생성
+            const imgElement = document.createElement('img');
+            imgElement.classList.add('preset-image');
+            imgElement.src = imageData.url;
+            imgElement.alt = imageData.title;
+
+            // 3. 자식 요소를 부모에 추가
+            containerDiv.appendChild(imgElement);
+            presetImagesContainer.appendChild(containerDiv);
+        }
+    }
+     setupCarousel(); 
+    const firstPreset = document.querySelector('.preset-image-container');
+    if (firstPreset) {
+        firstPreset.click();
+    }
+});
+
+
 
 
 // HTML에서 요소들을 가져옵니다.
@@ -30,7 +103,7 @@ let currentImageSrc = null;
 let currentImageRatio = 1; // 이미지의 가로세로 비율
 
 
-// 미리 정의된 이미지 정보
+/*
 const imageDatabase = {
     img1: {
         url: imageMacaron,
@@ -85,7 +158,7 @@ const imageDatabase = {
         title: '서재'
     },
 
-};
+}; */
 
 // 게임 상태를 관리할 변수들
 let pieces = [];
@@ -170,7 +243,7 @@ image.onerror = () => {
     disableDifficultyButtons();
 };
 
-
+/*
 // 프리셋 이미지 선택 처리
 document.querySelectorAll('.preset-image-container').forEach(container => {
     container.addEventListener('click', () => {
@@ -190,7 +263,8 @@ document.querySelectorAll('.preset-image-container').forEach(container => {
         currentImageRatio = imageData.ratio;
         loadImage(imageData.url, imageData.title);
     });
-});
+}); */ 
+//하단의 코드와 중복이어서 삭제
 
 // 이미지 로드 함수
 function loadImage(imageSrc, title = '') {
@@ -544,7 +618,7 @@ function handleResize() {
 // 창 크기 변경 시 반응형 조정 (디바운스 적용)
 window.addEventListener('resize', debounce(handleResize, 250)); // 250ms 간격으로 실행
 
-// 페이지 로드 시 첫 번째 프리셋 이미지 자동 선택
+/*
 window.addEventListener('load', () => {
     setPreviewImages();
     setupCarousel(); // 캐러셀 기능 설정 함수 호출
@@ -552,6 +626,25 @@ window.addEventListener('load', () => {
     if (firstPreset) {
         firstPreset.click();
     }
+});  */
+
+document.querySelector('.preset-images').addEventListener('click', (e) => {
+    const container = e.target.closest('.preset-image-container');
+    if (!container) return; // 올바른 요소를 클릭하지 않았다면 종료
+
+    const imageKey = container.dataset.image;
+    const imageData = imageDatabase[imageKey];
+
+    if (!imageData) {
+        showError('이미지 정보를 찾을 수 없습니다.');
+        return;
+    }
+
+    document.querySelectorAll('.preset-image').forEach(img => img.classList.remove('selected'));
+    container.querySelector('.preset-image').classList.add('selected');
+
+    showLoading();
+    loadImage(imageData.url, imageData.title);
 });
 
 document.querySelectorAll('.difficulty-controls button').forEach(button => {
@@ -563,24 +656,20 @@ document.querySelectorAll('.difficulty-controls button').forEach(button => {
 
 document.getElementById('closeCompletionMessage').addEventListener('click', hideCompletionMessage);
 
-function setPreviewImages() {
-    // 모든 .preset-image-container 요소를 가져옵니다.
-    document.querySelectorAll('.preset-image-container').forEach(container => {
-        // data-image 속성에서 이미지 키(예: 'space1')를 읽어옵니다.
-        const imageKey = container.dataset.image;
-        // 이미지 데이터베이스에서 해당 키의 정보를 찾습니다.
+/*
+function setPreviewImages() {    
+    document.querySelectorAll('.preset-image-container').forEach(container => {       
+        const imageKey = container.dataset.image;        
         const imageData = imageDatabase[imageKey];
-
-        if (imageData) {
-            // 컨테이너 안의 <img> 태그를 찾습니다.
+        if (imageData) {            
             const imgElement = container.querySelector('.preset-image');
-            if (imgElement) {
-                // 웹팩이 처리한 올바른 이미지 경로(imageData.url)를 src 속성에 할당합니다.
+            if (imgElement) {               
                 imgElement.src = imageData.url;
+                imgElement.alt = imageData.title;
             }
         }
     });
-}
+} */
 
 // --- ✨ 새로운 캐러셀 기능 함수 ---
 function setupCarousel() {
