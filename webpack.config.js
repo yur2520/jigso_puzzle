@@ -24,6 +24,10 @@ module.exports = {
         test: /\.css$/, // .css 확장자를 가진 파일을 찾음
         use: ['style-loader', 'css-loader'], // 적용할 로더 배열
       },
+       {
+        test: /\.(mp3|wav|ogg)$/i, // .mp3, .wav, .ogg 확장자를 가진 파일을
+        type: 'asset/resource'    // 별도의 파일로 처리하도록 설정합니다.
+      },
     ],
   },
 };

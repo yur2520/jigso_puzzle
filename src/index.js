@@ -1,5 +1,8 @@
 import ColorThief from 'colorthief';
 import './styles.css';
+const snapSound = new Audio(require('./sounds/snap.mp3').default);
+console.log('사운드 파일 소스:', snapSound.src); 
+
 
 const imagesContext = require.context('./images', false, /\.(png|jpeg)$/);
 const imageDatabase = {};
@@ -367,6 +370,9 @@ function addDragAndDrop(piece) {
             piece.style.transform = `translate(${correctX}px, ${correctY}px)`;
             piece.classList.add('snapped');
             puzzleContainer.appendChild(piece); // 부모를 퍼즐판으로 변경
+
+            snapSound.currentTime = 0; // 혹시 소리가 겹칠 경우를 대비해 처음부터 재생
+            snapSound.play();
 
             // 드래그 이벤트 리스너 제거하여 고정
             startEvents.forEach(ev => piece.removeEventListener(ev, handleStart));
