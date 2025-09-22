@@ -253,7 +253,9 @@ export function handleResize() {
             const newY = parseFloat(piece.dataset.correctY) * ratio;
             piece.dataset.correctX = newX;
             piece.dataset.correctY = newY;
-            piece.style.transform = `translate(${newX}px, ${newY}px)`;
+            piece.style.left = `${newX}px`;
+            piece.style.top = `${newY}px`;
+            piece.style.transform = '';
         }
     });
 }
