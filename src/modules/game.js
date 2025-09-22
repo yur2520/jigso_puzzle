@@ -23,7 +23,21 @@ function onPieceSnapped() {
 function shuffleAndPlacePieces() {
     pieces.sort(() => Math.random() - 0.5);
     const fragment = document.createDocumentFragment();
+    const spreadAreaHeight = Math.max(300, piecesContainer.clientHeight * 0.8);
     pieces.forEach(piece => {
+        const maxX = puzzleWidth - pieceWidth;
+        const maxY = spreadAreaHeight - pieceHeight;
+
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+
+        // top/left 방식으로 위치 설정
+        piece.style.left = `${randomX}px`;
+        piece.style.top = `${randomY}px`;
+        
+        // transform 속성은 깨끗하게 비워둡니다.
+        piece.style.transform = '';
+
         fragment.appendChild(piece);
         addDragAndDrop(piece, {
             puzzleContainer, piecesContainer, snapSound, pieceWidth, onSnap: onPieceSnapped
