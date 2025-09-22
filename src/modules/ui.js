@@ -17,20 +17,17 @@ const elements = {
     difficultyButtons: document.querySelectorAll('.difficulty-controls button')
 };
 
-export function showError(message) {
+export function showMessage(message, type = 'error') {
+    const duration = type === 'success' ? 3000 : 5000;
+    
     errorMessage.textContent = message;
+    errorMessage.className = `error-message ${type}`;
     errorMessage.style.display = 'block';
-    setTimeout(() => {
-        errorMessage.style.display = 'none';
-    }, 5000);
-}
 
-export function showSuccess(message) {
-    errorMessage.textContent = message;
-    errorMessage.style.display = 'block';
     setTimeout(() => {
         errorMessage.style.display = 'none';
-    }, 3000);
+        errorMessage.className = 'error-message';
+    }, duration);
 }
 export function showLoading() {
     loadingMessage.style.display = 'block';

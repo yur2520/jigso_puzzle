@@ -73,7 +73,7 @@ export function initialize() {
         const imageKey = container.dataset.image;
         const imageData = imageDatabase[imageKey];
         if (!imageData) {
-            ui.showError('이미지 정보를 찾을 수 없습니다.');
+            ui.showMessage('이미지 정보를 찾을 수 없습니다.', 'error');
             return;
         }
 

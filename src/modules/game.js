@@ -1,9 +1,10 @@
 import { addDragAndDrop } from './dragndrop.js';
 import * as ui from './ui.js';
+import snapSoundUrl from '../sounds/snap.mp3';
 
 const puzzleContainer = document.getElementById('puzzle-container');
 const piecesContainer = document.getElementById('pieces-container');
-const snapSound = new Audio(require('../sounds/snap.mp3').default);
+const snapSound = new Audio(snapSoundUrl);
 
 const image = new Image();
 let currentImageSrc = null;
@@ -136,7 +137,7 @@ function updateTimer() {
 // 외부에서 호출할 수 있도록 export 합니다.
 export function startGame(pieceCount) {
     if (!currentImageSrc) {
-        ui.showError('이미지를 먼저 선택해주세요.');
+        ui.showMessage('이미지를 먼저 선택해주세요.', 'error');
         return;
     }
 
@@ -217,13 +218,13 @@ image.onload = () => {
     
     ui.applyDynamicTheme(image); // ui. 접두사 및 image 인자 전달
     ui.enableDifficultyButtons();
-    ui.showSuccess('이미지가 로드되었습니다! 난이도를 선택해주세요.');
+    ui.showMessage('이미지가 로드되었습니다! 난이도를 선택해주세요.', 'success');
     ui.hideLoading();
 };
 
 image.onerror = () => {
     ui.hideLoading();
-    ui.showError('이미지를 불러올 수 없습니다. 다른 이미지를 선택해주세요.');
+    ui.showMessage('이미지를 불러올 수 없습니다. 다른 이미지를 선택해주세요.', 'error');
     ui.disableDifficultyButtons();
 };
 
