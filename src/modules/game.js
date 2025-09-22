@@ -240,22 +240,28 @@ export function handleResize() {
     
     if (pieces.length === 0) return;
 
+    // 비율 계산
+    const ratio = puzzleWidth / oldPuzzleWidth;
+
+    // 새 조각 크기 계산
     pieceWidth = puzzleWidth / gridCols;
     pieceHeight = puzzleHeight / gridRows;
 
     pieces.forEach(piece => {
+        // 1. 모든 조각의 크기를 업데이트합니다.
         piece.style.width = `${pieceWidth}px`;
         piece.style.height = `${pieceHeight}px`;
 
+        // 2. 모든 조각의 목표 좌표(dataset)를 새로 계산합니다.
+        const newX = parseFloat(piece.dataset.correctX) * ratio;
+        const newY = parseFloat(piece.dataset.correctY) * ratio;
+        piece.dataset.correctX = newX;
+        piece.dataset.correctY = newY;
+
+        // 3. 이미 맞춰진(snapped) 조각들만 화면상의 위치를 이동시킵니다.
         if (piece.classList.contains('snapped')) {
-            const ratio = puzzleWidth / oldPuzzleWidth;
-            const newX = parseFloat(piece.dataset.correctX) * ratio;
-            const newY = parseFloat(piece.dataset.correctY) * ratio;
-            piece.dataset.correctX = newX;
-            piece.dataset.correctY = newY;
             piece.style.left = `${newX}px`;
             piece.style.top = `${newY}px`;
-            piece.style.transform = '';
         }
     });
 }
